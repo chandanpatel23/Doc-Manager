@@ -25,12 +25,41 @@ class DocumentController extends Controller
                 if (Schema::hasColumn('documents', 'notes')) {
                     $qf->orWhere('notes', 'like', "%{$q}%");
                 }
+                // remarks column may exist; include it in search
+                if (Schema::hasColumn('documents', 'remarks')) {
+                    $qf->orWhere('remarks', 'like', "%{$q}%");
+                }
             });
         }
 
         $documents = $query->latest()->paginate(20)->withQueryString();
 
         return view('documents.index', compact('documents', 'q'));
+    }
+
+    // Separate endpoint for AJAX list (used by live search)
+    public function list(Request $request)
+    {
+        $q = $request->query('q');
+        $query = Document::query();
+
+        if ($q) {
+            $query->where(function($qf) use ($q) {
+                $qf->where('title', 'like', "%{$q}%")
+                    ->orWhere('filename', 'like', "%{$q}%")
+                    ->orWhere('mime_type', 'like', "%{$q}%");
+                if (Schema::hasColumn('documents', 'notes')) {
+                    $qf->orWhere('notes', 'like', "%{$q}%");
+                }
+                if (Schema::hasColumn('documents', 'remarks')) {
+                    $qf->orWhere('remarks', 'like', "%{$q}%");
+                }
+            });
+        }
+
+        $documents = $query->latest()->paginate(20)->withQueryString();
+
+        return view('documents._list', compact('documents'));
     }
 
     public function create()

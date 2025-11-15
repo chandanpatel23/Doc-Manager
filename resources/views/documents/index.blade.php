@@ -8,10 +8,8 @@
                 <div class="d-flex gap-2">
                     <form class="d-flex" method="GET" action="{{ route('documents.index') }}">
                         <input type="search" name="q" class="form-control form-control-sm me-2" placeholder="Search title, filename, type..." value="{{ request('q', '') }}">
-                        <button class="btn btn-sm btn-outline-primary me-2" type="submit">Search</button>
-                        @if(request('q'))
-                            <a href="{{ route('documents.index') }}" class="btn btn-sm btn-outline-secondary">Clear</a>
-                        @endif
+                        <button type="submit" class="btn btn-sm btn-outline-primary me-2">Search</button>
+                        <a id="search-clear-btn" href="{{ route('documents.index') }}" class="btn btn-sm btn-outline-secondary">Clear</a>
                     </form>
                     <a class="btn btn-primary" href="{{ route('documents.create') }}">Scan / Upload</a>
                 </div>
@@ -21,6 +19,9 @@
         <div class="card">
             <div class="card-body p-0">
                 <div class="table-responsive">
+                    <div id="documents-pagination-top" class="mb-2">
+                        {{ $documents->links() }}
+                    </div>
                     <table class="table table-hover mb-0">
                         <thead class="table-light">
                             <tr>
@@ -29,13 +30,14 @@
                                 <th class="d-none d-sm-table-cell">Document Type</th>
                                 <th class="d-none d-sm-table-cell">Order No</th>
                                 <th class="d-none d-sm-table-cell">Order Date</th>
+                                <th class="d-none d-sm-table-cell">Remarks</th>
                                 <th class="d-none d-sm-table-cell">MIME</th>
                                 <th class="d-none d-sm-table-cell">Size</th>
                                 <th>Uploaded</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="documents-tbody">
                             @foreach($documents as $d)
                                 @php $isImage = Str::startsWith($d->mime_type ?? '', 'image/'); @endphp
                                 <tr>
@@ -78,10 +80,14 @@
             </div>
         </div>
 
-        <div class="mt-3">
+        <div class="mt-3" id="documents-pagination">
             {{ $documents->links() }}
         </div>
     @else
         <div class="alert alert-info mt-3">No documents yet.</div>
     @endif
 @endsection
+
+@push('scripts')
+    <script src="/js/live-search.js"></script>
+@endpush
