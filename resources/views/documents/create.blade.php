@@ -84,50 +84,71 @@
         </div>
     </div>
 
-    <script src="/js/camera.js"></script>
-    
-        <!-- Modal for confirming metadata before upload -->
-        <div class="modal fade" id="metaModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Confirm document details</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3 text-center">
-                            <img id="metaPreview" src="#" alt="Preview" style="max-width:100%;height:auto;border:1px solid #ddd;border-radius:6px" />
+    <!-- Modal for confirming metadata before upload -->
+    <div class="modal fade" id="metaModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm document details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <!-- Crop/Rotate Controls -->
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" id="rotateLeftBtn" class="btn btn-outline-secondary" title="Rotate Left">↶ 90°</button>
+                                <button type="button" id="rotateRightBtn" class="btn btn-outline-secondary" title="Rotate Right">90° ↷</button>
+                                <button type="button" id="resetCropBtn" class="btn btn-outline-secondary" title="Reset">Reset</button>
+                            </div>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" class="btn btn-outline-secondary aspect-ratio-btn active" data-aspect="NaN">Free</button>
+                                <button type="button" class="btn btn-outline-secondary aspect-ratio-btn" data-aspect="1">Square</button>
+                                <button type="button" class="btn btn-outline-secondary aspect-ratio-btn" data-aspect="1.414">A4</button>
+                            </div>
                         </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Document Type</label>
-                                        <select id="metaDocumentType" class="form-select" aria-describedby="metaTypeFeedback">
-                                <option value="">-- Select type --</option>
-                                <option value="Emp Transfer Orders">Emp Transfer Orders</option>
-                                <option value="DJ/Admin Orders">DJ/Admin Orders</option>
-                                <option value="Committee Orders">Committee Orders</option>
-                                <option value="Thana Transfer Orders">Thana Transfer Orders</option>
-                                <option value="File Transfer Orders">File Transfer Orders</option>
-                            </select>
-                                        <div id="metaTypeFeedback" class="invalid-feedback">Please select a document type.</div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Order No</label>
-                            <input id="metaOrderNo" class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Order Date</label>
-                            <input id="metaOrderDate" type="date" class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Remarks</label>
-                            <textarea id="metaRemarks" class="form-control" rows="3"></textarea>
+                        <!-- Image preview with cropper -->
+                        <div style="max-height:400px;overflow:hidden">
+                            <img id="metaPreview" src="#" alt="Preview" style="max-width:100%;display:block" />
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" id="metaUploadBtn" class="btn btn-primary">Save Document</button>
+                                <div class="mb-3">
+                                    <label class="form-label">Document Type</label>
+                                    <select id="metaDocumentType" class="form-select" aria-describedby="metaTypeFeedback">
+                            <option value="">-- Select type --</option>
+                            <option value="Emp Transfer Orders">Emp Transfer Orders</option>
+                            <option value="DJ/Admin Orders">DJ/Admin Orders</option>
+                            <option value="Committee Orders">Committee Orders</option>
+                            <option value="Thana Transfer Orders">Thana Transfer Orders</option>
+                            <option value="File Transfer Orders">File Transfer Orders</option>
+                        </select>
+                                    <div id="metaTypeFeedback" class="invalid-feedback">Please select a document type.</div>
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label">Order No</label>
+                        <input id="metaOrderNo" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Order Date</label>
+                        <input id="metaOrderDate" type="date" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Remarks</label>
+                        <textarea id="metaRemarks" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" id="metaUploadBtn" class="btn btn-primary">Save Document</button>
                 </div>
             </div>
         </div>
+    </div>
 @endsection
+
+@push('scripts')
+    <!-- Cropper.js for image crop/rotate - loaded only on this page -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js" defer></script>
+    <script src="/js/camera.js" defer></script>
+@endpush

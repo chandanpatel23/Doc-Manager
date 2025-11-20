@@ -19,8 +19,8 @@
         <div class="card">
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <div id="documents-pagination-top" class="mb-2">
-                        {{ $documents->links() }}
+                   <!-- <div id="documents-pagination-top" class="mb-2"> -->
+                        <!-- {{ $documents->links() }} -->
                     </div>
                     <table class="table table-hover mb-0">
                         <thead class="table-light">
@@ -66,11 +66,13 @@
                                         <a class="btn btn-sm btn-outline-primary" href="{{ route('documents.show', $d) }}" target="_blank">View</a>
                                         <a class="btn btn-sm btn-outline-secondary" href="{{ route('documents.show', $d) }}?download=1">Download</a>
                                         <a class="btn btn-sm btn-outline-info" href="{{ route('documents.edit', $d) }}">Edit</a>
+                                        @if(auth()->user()->is_admin)
                                         <form style="display:inline" method="POST" action="{{ route('documents.destroy', $d) }}" onsubmit="return confirm('Delete this document? This will remove the file and record. Continue?')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                                         </form>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -80,9 +82,9 @@
             </div>
         </div>
 
-        <div class="mt-3" id="documents-pagination">
+    <!-- <div class="mt-3" id="documents-pagination">
             {{ $documents->links() }}
-        </div>
+        </div> -->
     @else
         <div class="alert alert-info mt-3">No documents yet.</div>
     @endif

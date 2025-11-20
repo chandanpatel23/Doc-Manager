@@ -11,8 +11,22 @@ use Intervention\Image\Facades\Image; // optional, but we'll fallback to GD if n
 
 class DocumentController extends Controller
 {
+    // Cache column existence to avoid repeated schema queries
+    private static $hasNotesColumn = null;
+    private static $hasRemarksColumn = null;
+
+    private function checkColumns()
+    {
+        if (self::$hasNotesColumn === null) {
+            self::$hasNotesColumn = Schema::hasColumn('documents', 'notes');
+        }
+        if (self::$hasRemarksColumn === null) {
+            self::$hasRemarksColumn = Schema::hasColumn('documents', 'remarks');
+        }
+    }
     public function index()
     {
+        $this->checkColumns();
         $q = request()->query('q');
         $query = Document::query();
 
@@ -22,11 +36,11 @@ class DocumentController extends Controller
                     ->orWhere('filename', 'like', "%{$q}%")
                     ->orWhere('mime_type', 'like', "%{$q}%");
                 // notes column may not exist; guard it
-                if (Schema::hasColumn('documents', 'notes')) {
+                if (self::$hasNotesColumn) {
                     $qf->orWhere('notes', 'like', "%{$q}%");
                 }
                 // remarks column may exist; include it in search
-                if (Schema::hasColumn('documents', 'remarks')) {
+                if (self::$hasRemarksColumn) {
                     $qf->orWhere('remarks', 'like', "%{$q}%");
                 }
             });
@@ -40,6 +54,7 @@ class DocumentController extends Controller
     // Separate endpoint for AJAX list (used by live search)
     public function list(Request $request)
     {
+        $this->checkColumns();
         $q = $request->query('q');
         $query = Document::query();
 
@@ -48,10 +63,10 @@ class DocumentController extends Controller
                 $qf->where('title', 'like', "%{$q}%")
                     ->orWhere('filename', 'like', "%{$q}%")
                     ->orWhere('mime_type', 'like', "%{$q}%");
-                if (Schema::hasColumn('documents', 'notes')) {
+                if (self::$hasNotesColumn) {
                     $qf->orWhere('notes', 'like', "%{$q}%");
                 }
-                if (Schema::hasColumn('documents', 'remarks')) {
+                if (self::$hasRemarksColumn) {
                     $qf->orWhere('remarks', 'like', "%{$q}%");
                 }
             });
@@ -257,6 +272,11 @@ class DocumentController extends Controller
 
     public function destroy(Document $document)
     {
+        // Only admins can delete documents
+        if (!auth()->user()->is_admin) {
+            abort(403, 'Unauthorized.');
+        }
+
         // delete file from storage if exists
         if (Storage::exists($document->filename)) {
             Storage::delete($document->filename);

@@ -1,0 +1,13 @@
+{
+  "name": "https-proxy",
+  "version": "1.0.0",
+  "description": "Simple HTTPS proxy for local development",
+  "main": "proxy.js",
+  "scripts": {
+    "start": "node proxy.js"
+  },
+  "dependencies": {
+    "http-proxy": "^1.18.1",
+    "selfsigned": "^2.1.1"
+  }
+}

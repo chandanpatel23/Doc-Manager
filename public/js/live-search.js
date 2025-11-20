@@ -1,12 +1,12 @@
-(function($){
+(function ($) {
     console.debug('[live-search] script loaded');
     // jQuery-based live search with debounce and loading indicator
     function debounce(fn, wait) {
         let t;
-        return function() {
+        return function () {
             const args = arguments;
             clearTimeout(t);
-            t = setTimeout(function(){ fn.apply(null, args); }, wait);
+            t = setTimeout(function () { fn.apply(null, args); }, wait);
         };
     }
 
@@ -29,7 +29,7 @@
             url: ajaxUrl,
             method: 'GET',
             headers: { 'X-Requested-With': 'XMLHttpRequest' },
-        }).done(function(html){
+        }).done(function (html) {
             // parse returned HTML and extract fragments
             const $doc = $('<div>').html(html);
             const $newTbody = $doc.find('#documents-tbody');
@@ -42,17 +42,17 @@
             }
 
             // update URL to reflect query (strip page param)
-            const qOnly = paramsStr ? paramsStr.replace(/^\?/, '').split('&').filter(function(p){ return !p.startsWith('page='); }).join('&') : '';
+            const qOnly = paramsStr ? paramsStr.replace(/^\?/, '').split('&').filter(function (p) { return !p.startsWith('page='); }).join('&') : '';
             const newUrl = '/documents' + (qOnly ? ('?' + qOnly) : '');
             history.replaceState({}, '', newUrl);
-        }).fail(function(){
+        }).fail(function () {
             console.warn('Live search request failed');
-        }).always(function(){
+        }).always(function () {
             $spinner.hide();
         });
     }
 
-    $(function(){
+    $(function () {
         const $input = $('input[name="q"]');
         if (!$input.length) return;
 
@@ -62,18 +62,18 @@
                 '<div class="spinner-border spinner-border-sm text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>');
         }
 
-        const doFetch = debounce(function(){
+        const doFetch = debounce(function () {
             const q = $input.val() || '';
             console.debug('[live-search] trigger fetch q=', q);
             fetchResults('q=' + encodeURIComponent(q));
         }, 300);
 
-    $input.on('input', doFetch);
-    // also listen to keyup as a fallback in some browsers
-    $input.on('keyup', doFetch);
+        $input.on('input', doFetch);
+        // also listen to keyup as a fallback in some browsers
+        $input.on('keyup', doFetch);
 
         // clear button (target by id)
-        $(document).on('click', '#search-clear-btn', function(e){
+        $(document).on('click', '#search-clear-btn', function (e) {
             e.preventDefault();
             console.debug('[live-search] clear clicked');
             $input.val('');
@@ -81,8 +81,8 @@
             return false;
         });
 
-        // pagination links
-        $(document).on('click', '#documents-pagination a', function(e){
+        // pagination links (both top and bottom)
+        $(document).on('click', '#documents-pagination a, #documents-pagination-top a', function (e) {
             e.preventDefault();
             const href = $(this).attr('href');
             const query = '?' + (href.split('?')[1] || '');

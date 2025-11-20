@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Documents')</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <style>
       body{padding-top:56px}
       .thumb{width:72px;height:72px;object-fit:cover;border-radius:6px}
@@ -39,6 +39,19 @@
       #documents-pagination-top .page-link:hover {
         background-color: rgba(0,0,0,0.03);
         transform: translateY(-1px);
+      }
+      /* Reduce pagination arrow size */
+      .pagination .page-link svg {
+        width: 0.5em;
+        height: 0.5em;
+      }
+      .pagination .page-link {
+        font-size: 0.875rem;
+        padding: 0.25rem 0.5rem;
+      }
+      .pagination .page-item:first-child .page-link,
+      .pagination .page-item:last-child .page-link {
+        padding: 0.25rem 0.5rem;
       }
     </style>
   </head>
@@ -89,8 +102,8 @@
       @yield('content')
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-3gJwYp2m9Y0r3b7r2b8qfKxQ5Y6bY4m6b4g5YkGQpNo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous" defer></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous" defer></script>
     @stack('scripts')
   </body>
  </html>

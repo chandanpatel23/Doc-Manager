@@ -31,11 +31,13 @@
                 <a class="btn btn-sm btn-outline-primary" href="{{ route('documents.show', $d) }}" target="_blank">View</a>
                 <a class="btn btn-sm btn-outline-secondary" href="{{ route('documents.show', $d) }}?download=1">Download</a>
                 <a class="btn btn-sm btn-outline-info" href="{{ route('documents.edit', $d) }}">Edit</a>
+                @if(auth()->user()->is_admin)
                 <form style="display:inline" method="POST" action="{{ route('documents.destroy', $d) }}" onsubmit="return confirm('Delete this document? This will remove the file and record. Continue?')">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                 </form>
+                @endif
             </td>
         </tr>
     @endforeach
